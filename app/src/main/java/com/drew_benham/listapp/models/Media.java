@@ -6,20 +6,23 @@ import java.util.UUID;
 public class Media {
 
     private UUID uuid;
-    private String name;
+    private String title;
+    private String subTitle;
     private int imageSrc;
     private Date releaseDate;
 
     public Media() {
         uuid = UUID.randomUUID();
-        name = "Not Set";
+        title = "Not Set";
+        subTitle = "Not Set";
         imageSrc = 0;
         releaseDate = null;
     }
 
-    public Media(String name, int imageSrc, Date releaseDate) {
+    public Media(String title, String subtitle, int imageSrc, Date releaseDate) {
         uuid = UUID.randomUUID();
-        this.name = name;
+        this.title = title;
+        this.subTitle = subtitle;
         this.imageSrc = imageSrc;
         this.releaseDate = releaseDate;
     }
@@ -32,12 +35,20 @@ public class Media {
         this.uuid = uuid;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public int getImageSrc() {
