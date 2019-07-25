@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Media {
+    public static final int TYPE_MEDIA = 1;
+    public static final int TYPE_LETTER = 2;
 
     private UUID uuid;
     private String title;
@@ -11,13 +13,27 @@ public class Media {
     private int imageSrc;
     private Date releaseDate;
 
+    // TODO: 7/22/19 This is for sorting the list alphabetically.
+    private int type;
+
     public Media() {
         uuid = UUID.randomUUID();
         title = "Not Set";
         subTitle = "Not Set";
         imageSrc = 0;
         releaseDate = null;
+        type = TYPE_MEDIA;
     }
+
+    public Media(String letterTitle) {
+        uuid = UUID.randomUUID();
+        title = letterTitle;
+        subTitle = "";
+        imageSrc = 0;
+        releaseDate = null;
+        type = TYPE_LETTER;
+    }
+
 
     public Media(String title, String subtitle, int imageSrc, Date releaseDate) {
         uuid = UUID.randomUUID();
@@ -25,6 +41,7 @@ public class Media {
         this.subTitle = subtitle;
         this.imageSrc = imageSrc;
         this.releaseDate = releaseDate;
+        type = TYPE_MEDIA;
     }
 
     public UUID getUuid() {
@@ -65,5 +82,13 @@ public class Media {
 
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

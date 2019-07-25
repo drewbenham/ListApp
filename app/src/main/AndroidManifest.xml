@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".TopLevelMediaList"
+            />
+        <activity android:name=".DetailedMedia" />
+
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.drew_benham.listapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.drew_benham.listapp.R;
+import com.drew_benham.listapp.TopLevelMediaList;
 import com.drew_benham.listapp.models.MediaListType;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
 public class ListSelectGridAdapter extends RecyclerView.Adapter<ListSelectGridAdapter.ListSelectViewHolder> {
     private Context context;
     private List<MediaListType> mediaLists;
+
+    public static final String LIST_NAME = "listName";
 
     public ListSelectGridAdapter(Context context, List<MediaListType> mediaLists) {
         this.context = context;
@@ -42,7 +46,9 @@ public class ListSelectGridAdapter extends RecyclerView.Adapter<ListSelectGridAd
         holder.gridViewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, holder.listNameText.getText(), Toast.LENGTH_SHORT).show();
+                Intent topIntent = new Intent(context, TopLevelMediaList.class);
+                topIntent.putExtra(LIST_NAME, holder.listNameText.getText());
+                context.startActivity(topIntent);
             }
         });
     }
