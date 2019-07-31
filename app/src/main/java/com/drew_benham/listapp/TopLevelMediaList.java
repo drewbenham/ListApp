@@ -1,11 +1,14 @@
 package com.drew_benham.listapp;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.drew_benham.listapp.adapters.ListSelectGridAdapter;
@@ -17,14 +20,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class TopLevelMediaList extends AppCompatActivity implements TopLevelMediaListAdapter.OnMediaListener {
+    private static final String TAG = "TopLevelMediaList";
+
     private ViewHolder viewHolder;
     private TopLevelMediaListAdapter topLevelMediaListAdapter;
 
     private List<Media> mediaList;
     private String listName;
+
+    public static final String DETAILS_ITEM = "detailsItem";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,14 +52,21 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
         mediaList = new ArrayList<>();
 
         Date date = new Date();
-        List<String> songList = new ArrayList<>();
-        Media mediaA = new Record("C Artist", "B Album", R.drawable.ic_launcher_background, date, songList);
-        Media mediaB = new Record("B Artist", "A Album", R.drawable.ic_launcher_background, date, songList);
+        List<Pair<String, String>> songList = new ArrayList<>();
+        Pair<String, String> testPair = new Pair("song1", "time1");
+        Pair<String, String> testPair2 = new Pair("song12", "time12");
+        songList.add(testPair);
+        songList.add(testPair2);
+
+        HashMap<String, List<Pair<String, String>>> testHash = new HashMap<>();
+        testHash.put("Side A", songList);
+        testHash.put("Side B", songList);
+
+        Media mediaA = new Record("C Artist", "B Album", R.drawable.ic_launcher_background, date, testHash);
+        Media mediaB = new Record("B Artist", "A Album", R.drawable.ic_launcher_background, date, testHash);
 
         mediaList.add(mediaA);
         mediaList.add(mediaB);
-
-
     }
 
     // TODO: 7/22/19 Change this to take in parameter for sorting. 
@@ -96,7 +111,8 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
         viewHolder = new ViewHolder();
 
         viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        topLevelMediaListAdapter = new TopLevelMediaListAdapter(this, addAlphabet(sortMediaFilter(mediaList)), this);
+        mediaList = addAlphabet(sortMediaFilter(mediaList));
+        topLevelMediaListAdapter = new TopLevelMediaListAdapter(this, mediaList, this);
         viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
     }
 
@@ -104,7 +120,7 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
     public void onMediaClick(int position) {
         Media media = mediaList.get(position);
         Intent detailsIntent = new Intent(this, DetailedMedia.class);
-
+        detailsIntent.putExtra(DETAILS_ITEM, media);
         if (media.getType() == Media.TYPE_MEDIA) {
             startActivity(detailsIntent);
         }

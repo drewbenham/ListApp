@@ -32,7 +32,9 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
         switch (viewType) {
             case Media.TYPE_MEDIA:
                 View viewMedia = LayoutInflater.from(parent.getContext()).inflate(R.layout.media_list_item, parent, false);
-                return new TopLevelViewHolder(viewMedia, onMediaListener);
+                TopLevelViewHolder viewHolder = new TopLevelViewHolder(viewMedia, onMediaListener);
+                viewMedia.setOnClickListener(viewHolder);
+                return viewHolder;
 
             case Media.TYPE_LETTER:
                 View viewLetter = LayoutInflater.from(parent.getContext()).inflate(R.layout.letter_list_item, parent, false);

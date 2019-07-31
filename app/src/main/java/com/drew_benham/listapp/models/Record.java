@@ -1,28 +1,30 @@
 package com.drew_benham.listapp.models;
 
-import java.util.ArrayList;
+import android.util.Pair;
+
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Record extends Media {
 
-    private List<String> songlist;
+    private HashMap<String, List<Pair<String, String>>> songlist;
 
     public Record() {
-        songlist = new ArrayList<>();
+        songlist = new HashMap<String, List<Pair<String, String>>>();
     }
 
-    public Record(String title, String subTitle, int imageSrc, Date releaseDate, List<String> songlist) {
+    public Record(String title, String subTitle, int imageSrc, Date releaseDate, HashMap<String, List<Pair<String, String>>> songlist) {
         super(title, subTitle, imageSrc, releaseDate);
 
         this.songlist = songlist;
     }
 
-    public List<String> getSonglist() {
+    public HashMap<String, List<Pair<String, String>>> getSonglist() {
         return songlist;
     }
 
-    public void setSonglist(List<String> songlist) {
+    public void setSonglist(HashMap<String, List<Pair<String, String>>> songlist) {
         this.songlist = songlist;
     }
 }

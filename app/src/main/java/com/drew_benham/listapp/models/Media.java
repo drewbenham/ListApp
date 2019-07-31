@@ -1,9 +1,10 @@
 package com.drew_benham.listapp.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Media {
+public class Media implements Serializable {
     public static final int TYPE_MEDIA = 1;
     public static final int TYPE_LETTER = 2;
 
