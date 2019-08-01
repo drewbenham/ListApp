@@ -1,17 +1,17 @@
-package com.drew_benham.listapp;
+package com.drew_benham.listapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.adapters.ExpandableDetailAdapter;
 import com.drew_benham.listapp.models.Media;
-import com.drew_benham.listapp.models.Record;
+import com.drew_benham.listapp.models.MusicMedia;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class DetailedMedia extends AppCompatActivity {
     private ExpandableDetailAdapter expandableDetailAdapter;
 
     private List<String> listHeaderData;
-    private HashMap<String, List<Pair<String, String>>> hashMap;
+    private HashMap<String, List<String>> hashMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,8 +41,8 @@ public class DetailedMedia extends AppCompatActivity {
     }
 
     private void initLists() {
-        if (mediaDetail instanceof Record) {
-            Record recordMedia = (Record) mediaDetail;
+        if (mediaDetail instanceof MusicMedia) {
+            MusicMedia recordMedia = (MusicMedia) mediaDetail;
 
             hashMap = recordMedia.getSonglist();
             listHeaderData = new ArrayList<>();
@@ -50,7 +50,6 @@ public class DetailedMedia extends AppCompatActivity {
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry)it.next();
                 listHeaderData.add(entry.getKey().toString());
-                it.remove();
             }
         }
 

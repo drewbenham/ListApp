@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.drew_benham.listapp.R;
-import com.drew_benham.listapp.TopLevelMediaList;
+import com.drew_benham.listapp.activities.TopLevelMediaList;
 import com.drew_benham.listapp.models.MediaListType;
 
 import java.util.List;

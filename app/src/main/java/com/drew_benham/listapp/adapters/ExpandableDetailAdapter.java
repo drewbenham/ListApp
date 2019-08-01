@@ -1,11 +1,11 @@
 package com.drew_benham.listapp.adapters;
 
 import android.content.Context;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.drew_benham.listapp.R;
@@ -16,9 +16,9 @@ import java.util.List;
 public class ExpandableDetailAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> mediaHeaderList;
-    private HashMap<String, List<Pair<String, String>>> listHashMap;
+    private HashMap<String, List<String>> listHashMap;
 
-    public ExpandableDetailAdapter(Context context, List<String> mediaHeaderList, HashMap<String, List<Pair<String, String>>> listHashMap) {
+    public ExpandableDetailAdapter(Context context, List<String> mediaHeaderList, HashMap<String, List<String>> listHashMap) {
         this.context = context;
         this.mediaHeaderList = mediaHeaderList;
         this.listHashMap = listHashMap;
@@ -71,25 +71,28 @@ public class ExpandableDetailAdapter extends BaseExpandableListAdapter {
         TextView headerTextView = convertView.findViewById(R.id.lblListHeader);
         headerTextView.setText(header);
 
+        ImageView arrow = convertView.findViewById(R.id.groupArrow);
+        if (isExpanded) {
+            arrow.setSelected(true);
+        }
+        else {
+            arrow.setSelected(false);
+        }
+
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        Pair<String, String> listItem = (Pair<String, String>) getChild(groupPosition, childPosition);
-        String left = listItem.first;
-        String right = listItem.second;
+        String listItem = (String) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.expandable_list_item, null);
         }
 
-        TextView leftText = convertView.findViewById(R.id.leftDetailItem);
-        TextView rightText = convertView.findViewById(R.id.rightDetailItem);
-
-        leftText.setText(left);
-        rightText.setText(right);
+        TextView expChild = convertView.findViewById(R.id.expChildText);
+        expChild.setText(listItem);
 
         return convertView;
     }

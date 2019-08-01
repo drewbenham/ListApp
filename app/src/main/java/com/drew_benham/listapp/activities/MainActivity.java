@@ -1,10 +1,11 @@
-package com.drew_benham.listapp;
+package com.drew_benham.listapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.adapters.ListSelectGridAdapter;
 import com.drew_benham.listapp.models.MediaListType;
 

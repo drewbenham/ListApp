@@ -1,20 +1,21 @@
-package com.drew_benham.listapp;
+package com.drew_benham.listapp.activities;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.drew_benham.listapp.R;
+import com.drew_benham.listapp.activities.DetailedMedia;
 import com.drew_benham.listapp.adapters.ListSelectGridAdapter;
 import com.drew_benham.listapp.adapters.TopLevelMediaListAdapter;
 import com.drew_benham.listapp.models.Media;
-import com.drew_benham.listapp.models.Record;
+import com.drew_benham.listapp.models.MusicMedia;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,18 +53,16 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
         mediaList = new ArrayList<>();
 
         Date date = new Date();
-        List<Pair<String, String>> songList = new ArrayList<>();
-        Pair<String, String> testPair = new Pair("song1", "time1");
-        Pair<String, String> testPair2 = new Pair("song12", "time12");
-        songList.add(testPair);
-        songList.add(testPair2);
+        List<String> songList = new ArrayList<>();
+        songList.add("song 1");
+        songList.add("song 2");
 
-        HashMap<String, List<Pair<String, String>>> testHash = new HashMap<>();
+        HashMap<String, List<String>> testHash = new HashMap<>();
         testHash.put("Side A", songList);
         testHash.put("Side B", songList);
 
-        Media mediaA = new Record("C Artist", "B Album", R.drawable.ic_launcher_background, date, testHash);
-        Media mediaB = new Record("B Artist", "A Album", R.drawable.ic_launcher_background, date, testHash);
+        Media mediaA = new MusicMedia("C Artist", "B Album", R.drawable.ic_launcher_background, date, testHash);
+        Media mediaB = new MusicMedia("B Artist", "A Album", R.drawable.ic_launcher_background, date, testHash);
 
         mediaList.add(mediaA);
         mediaList.add(mediaB);
@@ -114,6 +113,13 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
         mediaList = addAlphabet(sortMediaFilter(mediaList));
         topLevelMediaListAdapter = new TopLevelMediaListAdapter(this, mediaList, this);
         viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
+
+        viewHolder.addEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: need to add edit activity. pictures and stuff.
+            }
+        });
     }
 
     @Override
@@ -142,9 +148,11 @@ public class TopLevelMediaList extends AppCompatActivity implements TopLevelMedi
     }
 
     private class ViewHolder {
+        private ImageButton addEdit;
         private RecyclerView recyclerView;
 
         public ViewHolder() {
+            addEdit = findViewById(R.id.addItemBtn);
             recyclerView = findViewById(R.id.topLevelRecyclerView);
         }
     }
