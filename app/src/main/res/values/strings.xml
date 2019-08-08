@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">ListApp</string>
+    <string name="artist_title">Artist</string>
+    <string name="album_sub">Album</string>
+    <string name="movie_title">Title</string>
+    <string name="movie_description">Description</string>
+    <string name="vinyl_tab_item">33 Vinyl</string>
+    <string name="cd_tab_item">CD\'s</string>
+    <string name="cassette_tab_item">Cassette</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

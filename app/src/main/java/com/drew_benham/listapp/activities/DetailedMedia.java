@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DetailedMedia extends AppCompatActivity {
+    public static final String MEDIA_DETAIL = "mediaDetail";
+    private static int result = 3;
+
     private Media mediaDetail;
     private DetailViewHolder detailViewHolder;
     private ExpandableDetailAdapter expandableDetailAdapter;
@@ -38,6 +44,26 @@ public class DetailedMedia extends AppCompatActivity {
         initLists();
 
         setupLayout();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.editItemMenuBtn:
+                Intent editIntent = new Intent(this, AddEditActivity.class);
+                editIntent.putExtra(MEDIA_DETAIL, mediaDetail);
+                startActivityForResult(editIntent, result);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initLists() {
