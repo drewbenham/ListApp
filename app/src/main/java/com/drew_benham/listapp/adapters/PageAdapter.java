@@ -5,23 +5,39 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.drew_benham.listapp.fragments.VinylFragment;
+import com.drew_benham.listapp.models.Media;
+
+import java.util.List;
 
 public class PageAdapter extends FragmentPagerAdapter {
     private int numOfTabs;
+    private List<Media> mediaList;
 
-    public PageAdapter(FragmentManager fm, int numOfTabs) {
+    public PageAdapter(FragmentManager fm, int numOfTabs, List<Media> mediaList) {
         super(fm);
         this.numOfTabs = numOfTabs;
+        this.mediaList = mediaList;
     }
 
     @Override
     public Fragment getItem(int position) {
+        Fragment fragment = null;
+
         switch (position) {
             case 0:
-                return new VinylFragment();
+                fragment = VinylFragment.newInstance(mediaList);
+                break;
+            case 1:
+                fragment = VinylFragment.newInstance(mediaList);
+                break;
+            case 2:
+                fragment = VinylFragment.newInstance(mediaList);
+                break;
             default:
-                return null;
+                fragment = null;
         }
+
+        return fragment;
     }
 
     @Override

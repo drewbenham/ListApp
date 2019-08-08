@@ -11,13 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.activities.DetailedMedia;
-import com.drew_benham.listapp.activities.TopLevelMediaList;
-import com.drew_benham.listapp.adapters.ListSelectGridAdapter;
 import com.drew_benham.listapp.adapters.TopLevelMediaListAdapter;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
@@ -37,18 +33,16 @@ import java.util.List;
  * Use the {@link VinylFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VinylFragment extends Fragment {
-    private TopLevelMediaList.ViewHolder viewHolder;
+public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener {
+    private  ViewHolder viewHolder;
     private TopLevelMediaListAdapter topLevelMediaListAdapter;
 
     private List<Media> mediaList;
-    private String listName;
 
     public static final String DETAILS_ITEM = "detailsItem";
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "context";
-    private static final String ARG_PARAM2 = "mediaList";
+    private static final String LIST_ARG = "mediaList";
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,37 +54,42 @@ public class VinylFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment VinylFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VinylFragment newInstance(String param1, String param2) {
+    public static VinylFragment newInstance(List<Media> mediaList) {
         VinylFragment fragment = new VinylFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
+        ArrayList<Media> mediaArrayList = new ArrayList<>(mediaList.size());
+        mediaArrayList.addAll(mediaList);
+
+        args.putSerializable(LIST_ARG, mediaArrayList);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.top_level_media_list, container, false);
+        viewHolder = new ViewHolder(view);
+
+        viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mediaList = addAlphabet(sortMediaFilter(mediaList));
+        topLevelMediaListAdapter = new TopLevelMediaListAdapter(getContext(), mediaList, this);
+        viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
+
+        return view;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
+            mediaList = (List<Media>)getArguments().getSerializable(LIST_ARG);
         }
-
-        setContentView(R.layout.top_level_media_list);
-        initMediaList();
-
-        setupLayout();
-
-        Intent parentIntent = getIntent();
-        listName = parentIntent.getStringExtra(ListSelectGridAdapter.LIST_NAME);
-
-        Toast.makeText(this, listName, Toast.LENGTH_SHORT).show();
     }
 
     private void initMediaList() {
@@ -150,63 +149,14 @@ public class VinylFragment extends Fragment {
         return customList;
     }
 
-    private void setupLayout() {
-        viewHolder = new TopLevelMediaList.ViewHolder();
-
-        viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mediaList = addAlphabet(sortMediaFilter(mediaList));
-        topLevelMediaListAdapter = new TopLevelMediaListAdapter(this, mediaList, this);
-        viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
-
-        viewHolder.addEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: need to add edit activity. pictures and stuff.
-            }
-        });
-    }
-
     @Override
     public void onMediaClick(int position) {
         Media media = mediaList.get(position);
-        Intent detailsIntent = new Intent(this, DetailedMedia.class);
+        Intent detailsIntent = new Intent(getContext(), DetailedMedia.class);
         detailsIntent.putExtra(DETAILS_ITEM, media);
         if (media.getType() == Media.TYPE_MEDIA) {
             startActivity(detailsIntent);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    private class ViewHolder {
-        private ImageButton addEdit;
-        private RecyclerView recyclerView;
-
-        public ViewHolder() {
-            addEdit = findViewById(R.id.addEditItem);
-            recyclerView = findViewById(R.id.topLevelRecyclerView);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -246,5 +196,13 @@ public class VinylFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class ViewHolder {
+        private RecyclerView recyclerView;
+
+        public ViewHolder(View v) {
+            recyclerView = v.findViewById(R.id.topLevelRecyclerView);
+        }
     }
 }
