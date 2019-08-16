@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.adapters.ExpandableDetailAdapter;
-import com.drew_benham.listapp.fragments.VinylFragment;
+import com.drew_benham.listapp.fragments.MusicFragment;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
 
@@ -40,7 +40,7 @@ public class DetailedMedia extends AppCompatActivity {
         setContentView(R.layout.detailed_layout);
 
         Intent parentIntent = getIntent();
-        mediaDetail = (Media) parentIntent.getSerializableExtra(VinylFragment.DETAILS_ITEM);
+        mediaDetail = (Media) parentIntent.getSerializableExtra(MusicFragment.DETAILS_ITEM);
 
         initLists();
 

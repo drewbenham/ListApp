@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.drew_benham.listapp.fragments.VinylFragment;
+import com.drew_benham.listapp.fragments.MusicFragment;
 import com.drew_benham.listapp.models.Media;
 
 import java.util.List;
@@ -25,13 +25,13 @@ public class PageAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                fragment = VinylFragment.newInstance(mediaList);
+                fragment = MusicFragment.newInstance(mediaList);
                 break;
             case 1:
-                fragment = VinylFragment.newInstance(mediaList);
+                fragment = MusicFragment.newInstance(mediaList);
                 break;
             case 2:
-                fragment = VinylFragment.newInstance(mediaList);
+                fragment = MusicFragment.newInstance(mediaList);
                 break;
             default:
                 fragment = null;

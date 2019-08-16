@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.activities.DetailedMedia;
@@ -28,12 +27,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link VinylFragment.OnFragmentInteractionListener} interface
+ * {@link MusicFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link VinylFragment#newInstance} factory method to
+ * Use the {@link MusicFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener {
+public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener {
     private  ViewHolder viewHolder;
     private TopLevelMediaListAdapter topLevelMediaListAdapter;
 
@@ -46,7 +45,7 @@ public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.
 
     private OnFragmentInteractionListener mListener;
 
-    public VinylFragment() {
+    public MusicFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +53,11 @@ public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment VinylFragment.
+     * @return A new instance of fragment MusicFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VinylFragment newInstance(List<Media> mediaList) {
-        VinylFragment fragment = new VinylFragment();
+    public static MusicFragment newInstance(List<Media> mediaList) {
+        MusicFragment fragment = new MusicFragment();
         Bundle args = new Bundle();
 
         ArrayList<Media> mediaArrayList = new ArrayList<>(mediaList.size());
@@ -76,7 +75,6 @@ public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.
         viewHolder = new ViewHolder(view);
 
         viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mediaList = addAlphabet(sortMediaFilter(mediaList));
         topLevelMediaListAdapter = new TopLevelMediaListAdapter(getContext(), mediaList, this);
         viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
 
@@ -89,26 +87,8 @@ public class VinylFragment extends Fragment implements TopLevelMediaListAdapter.
 
         if (getArguments() != null) {
             mediaList = (List<Media>)getArguments().getSerializable(LIST_ARG);
+            mediaList = addAlphabet(sortMediaFilter(mediaList));
         }
-    }
-
-    private void initMediaList() {
-        mediaList = new ArrayList<>();
-
-        Date date = new Date();
-        List<String> songList = new ArrayList<>();
-        songList.add("song 1");
-        songList.add("song 2");
-
-        HashMap<String, List<String>> testHash = new HashMap<>();
-        testHash.put("Side A", songList);
-        testHash.put("Side B", songList);
-
-        Media mediaA = new MusicMedia("C Artist", "B Album", R.drawable.ic_launcher_background, date, testHash);
-        Media mediaB = new MusicMedia("B Artist", "A Album", R.drawable.ic_launcher_background, date, testHash);
-
-        mediaList.add(mediaA);
-        mediaList.add(mediaB);
     }
 
     // TODO: 7/22/19 Change this to take in parameter for sorting.

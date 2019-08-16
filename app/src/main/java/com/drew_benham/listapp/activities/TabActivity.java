@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.adapters.PageAdapter;
-import com.drew_benham.listapp.fragments.VinylFragment;
+import com.drew_benham.listapp.fragments.MusicFragment;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
 
@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class TabActivity extends AppCompatActivity implements VinylFragment.OnFragmentInteractionListener {
+public class TabActivity extends AppCompatActivity implements MusicFragment.OnFragmentInteractionListener {
     private TabViewHolder tabViewholder;
     private PagerAdapter pagerAdapter;
     private List<Media> mediaList;
