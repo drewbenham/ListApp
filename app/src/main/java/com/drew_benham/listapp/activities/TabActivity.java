@@ -1,57 +1,45 @@
 package com.drew_benham.listapp.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabItem;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+
+import android.view.View;
 import android.widget.ImageButton;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.adapters.PageAdapter;
 import com.drew_benham.listapp.fragments.MusicFragment;
+import com.drew_benham.listapp.interfaces.OnDataChangedListener;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class TabActivity extends AppCompatActivity implements MusicFragment.OnFragmentInteractionListener {
+    public static final int NEW_ITEM_REQUEST_CODE = 1;
+    public static final String ADD = "add";
+    public static final String EDIT = "edit";
+
     private TabViewHolder tabViewholder;
-    private PagerAdapter pagerAdapter;
+    private PageAdapter pagerAdapter;
     private List<Media> mediaList;
+
+    public static OnDataChangedListener dataChangedListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_layout);
 
-        initMediaList();
         setupLayout();
-    }
-
-    private void initMediaList() {
-        mediaList = new ArrayList<>();
-
-        Date date = new Date();
-        List<String> songList = new ArrayList<>();
-        songList.add("song 1");
-        songList.add("song 2");
-
-        HashMap<String, List<String>> testHash = new HashMap<>();
-        testHash.put("Side A", songList);
-        testHash.put("Side B", songList);
-
-        Media mediaA = new MusicMedia("C Artist", "B Album", R.drawable.ic_launcher_background, date, testHash);
-        Media mediaB = new MusicMedia("B Artist", "A Album", R.drawable.ic_launcher_background, date, testHash);
-
-        mediaList.add(mediaA);
-        mediaList.add(mediaB);
     }
 
     private void setupLayout() {
@@ -59,6 +47,26 @@ public class TabActivity extends AppCompatActivity implements MusicFragment.OnFr
         pagerAdapter = new PageAdapter(getSupportFragmentManager(), tabViewholder.tabLayout.getTabCount(), mediaList);
         tabViewholder.viewPager.setAdapter(pagerAdapter);
         tabViewholder.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabViewholder.tabLayout));
+
+        tabViewholder.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addEditItemIntent = new Intent(TabActivity.this, AddEditActivity.class);
+                addEditItemIntent.putExtra(ADD, true);
+                startActivityForResult(addEditItemIntent, NEW_ITEM_REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NEW_ITEM_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                MusicMedia musicMedia = (MusicMedia) data.getSerializableExtra(AddEditActivity.RESULT_MEDIA);
+                dataChangedListener.onDataChanged(musicMedia);
+            }
+        }
     }
 
     @Override
@@ -68,15 +76,15 @@ public class TabActivity extends AppCompatActivity implements MusicFragment.OnFr
 
     private class TabViewHolder {
         TabLayout tabLayout;
-        ImageButton addItem;
         ViewPager viewPager;
         TabItem vinylTab;
         TabItem cdTab;
         TabItem cassetteTab;
+        FloatingActionButton floatingActionButton;
 
         public TabViewHolder() {
             tabLayout = findViewById(R.id.tabLayout);
-            addItem = findViewById(R.id.addEditItem);
+            floatingActionButton = findViewById(R.id.floatingAddBtn);
             viewPager = findViewById(R.id.viewPager);
             vinylTab = findViewById(R.id.vinylTabItem);
             cdTab = findViewById(R.id.cdTabItem);

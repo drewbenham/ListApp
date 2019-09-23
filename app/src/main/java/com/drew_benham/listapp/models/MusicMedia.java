@@ -1,13 +1,20 @@
 package com.drew_benham.listapp.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+@Entity(tableName = "media_table")
 public class MusicMedia extends Media {
 
+    @ColumnInfo(name = "song_list")
     private HashMap<String, List<String>> songlist;
 
+    @Ignore
     public MusicMedia() {
         songlist = new HashMap<>();
     }

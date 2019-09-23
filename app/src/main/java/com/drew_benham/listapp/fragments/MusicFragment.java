@@ -4,24 +4,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.activities.DetailedMedia;
+import com.drew_benham.listapp.activities.TabActivity;
 import com.drew_benham.listapp.adapters.TopLevelMediaListAdapter;
+import com.drew_benham.listapp.database.DaoAsyncProcessor;
+import com.drew_benham.listapp.interfaces.OnDataChangedListener;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
+import com.drew_benham.listapp.view_models.MusicViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,14 +37,14 @@ import java.util.List;
  * Use the {@link MusicFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener {
+public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener, OnDataChangedListener {
     private  ViewHolder viewHolder;
     private TopLevelMediaListAdapter topLevelMediaListAdapter;
+    private MusicViewModel musicViewModel;
 
     private List<Media> mediaList;
 
     public static final String DETAILS_ITEM = "detailsItem";
-
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String LIST_ARG = "mediaList";
 
@@ -59,12 +64,13 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
     public static MusicFragment newInstance(List<Media> mediaList) {
         MusicFragment fragment = new MusicFragment();
         Bundle args = new Bundle();
-
-        ArrayList<Media> mediaArrayList = new ArrayList<>(mediaList.size());
-        mediaArrayList.addAll(mediaList);
-
-        args.putSerializable(LIST_ARG, mediaArrayList);
-        fragment.setArguments(args);
+//        mediaList = musicViewModel.getAllMusic();
+//
+//        ArrayList<Media> mediaArrayList = new ArrayList<>(mediaList.size());
+//        mediaArrayList.addAll(mediaList);
+//
+//        args.putSerializable(LIST_ARG, mediaArrayList);
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -75,8 +81,20 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
         viewHolder = new ViewHolder(view);
 
         viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        topLevelMediaListAdapter = new TopLevelMediaListAdapter(getContext(), mediaList, this);
+        topLevelMediaListAdapter = new TopLevelMediaListAdapter(this);
         viewHolder.recyclerView.setAdapter(topLevelMediaListAdapter);
+        TabActivity.dataChangedListener = this;
+
+        musicViewModel = ViewModelProviders.of(this).get(MusicViewModel.class);
+
+        musicViewModel.getAllMusic().observe(this, new Observer<List<MusicMedia>>() {
+            @Override
+            public void onChanged(List<MusicMedia> musicMedia) {
+                List<Media> mediaGeneric = new ArrayList<>();
+                mediaGeneric.addAll(musicMedia);
+                topLevelMediaListAdapter.setMediaList(mediaGeneric);
+            }
+        });
 
         return view;
     }
@@ -130,8 +148,7 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
     }
 
     @Override
-    public void onMediaClick(int position) {
-        Media media = mediaList.get(position);
+    public void onMediaClick(Media media) {
         Intent detailsIntent = new Intent(getContext(), DetailedMedia.class);
         detailsIntent.putExtra(DETAILS_ITEM, media);
         if (media.getType() == Media.TYPE_MEDIA) {
@@ -161,6 +178,11 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDataChanged(final MusicMedia music) {
+        musicViewModel.insert(music);
     }
 
     /**

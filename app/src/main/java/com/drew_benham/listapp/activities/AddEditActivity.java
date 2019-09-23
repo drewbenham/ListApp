@@ -4,25 +4,34 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.models.Media;
+import com.drew_benham.listapp.models.MusicMedia;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class AddEditActivity extends AppCompatActivity {
-    private AddEditViewholder viewholder;
-    private Media media;
+    public static final String RESULT_MEDIA = "resultMedia";
+
+    private AddEditViewHolder viewholder;
+    private MusicMedia media;
     private boolean isMusic;
+    private boolean isEdit;
 
     public static final int PICK_IMAGE = 1;
 
@@ -30,14 +39,51 @@ public class AddEditActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_edit_layout);
-        media = (Media) getIntent().getSerializableExtra(DetailedMedia.MEDIA_DETAIL);
+        if (getIntent().getBooleanExtra(TabActivity.ADD, false)) {
+            media = new MusicMedia();
+            isEdit = false;
+        } else {
+            media = (MusicMedia) getIntent().getSerializableExtra(DetailedMedia.MEDIA_DETAIL);
+            isEdit = true;
+        }
+
         //TODO: change this when you add types.
         isMusic = true;
         setupLayout();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.save_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.saveItemMenuBtn:
+                saveItem();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void saveItem() {
+        media.setTitle(viewholder.titleEdit.getText().toString());
+        media.setSubTitle(viewholder.subTitleEdit.getText().toString());
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(RESULT_MEDIA, media);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+
+
     private void setupLayout() {
-        viewholder = new AddEditViewholder();
+        viewholder = new AddEditViewHolder();
 
         if (isMusic) {
             viewholder.titleText.setText(R.string.artist_title);
@@ -47,8 +93,11 @@ public class AddEditActivity extends AppCompatActivity {
             viewholder.titleText.setText(R.string.movie_title);
             viewholder.subTitleText.setText(R.string.movie_description);
         }
-
-        viewholder.thumbnailPreview.setImageResource(media.getImageSrc());
+        if (media.getImageSrc() != 0) {
+            viewholder.thumbnailPreview.setImageResource(media.getImageSrc());
+        } else {
+            viewholder.thumbnailPreview.setImageResource(R.drawable.ic_launcher_background);
+        }
 
         viewholder.pickImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +122,7 @@ public class AddEditActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             if (data == null) {
                 return;
@@ -108,7 +158,7 @@ public class AddEditActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private class AddEditViewholder {
+    private class AddEditViewHolder {
         private TextView titleText;
         private TextView titleEdit;
         private TextView subTitleText;
@@ -116,7 +166,7 @@ public class AddEditActivity extends AppCompatActivity {
         private ImageView thumbnailPreview;
         private ImageButton pickImageBtn;
 
-        public AddEditViewholder() {
+        AddEditViewHolder() {
             titleText = findViewById(R.id.titleTextLbl);
             titleEdit = findViewById(R.id.titleEditText);
             subTitleText = findViewById(R.id.subTitleTextLbl);

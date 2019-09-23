@@ -1,8 +1,9 @@
 package com.drew_benham.listapp.adapters;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.drew_benham.listapp.fragments.MusicFragment;
 import com.drew_benham.listapp.models.Media;
@@ -14,12 +15,13 @@ public class PageAdapter extends FragmentPagerAdapter {
     private List<Media> mediaList;
 
     public PageAdapter(FragmentManager fm, int numOfTabs, List<Media> mediaList) {
-        super(fm);
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.numOfTabs = numOfTabs;
         this.mediaList = mediaList;
     }
 
     @Override
+    @NonNull
     public Fragment getItem(int position) {
         Fragment fragment = null;
 

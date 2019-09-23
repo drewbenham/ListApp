@@ -1,24 +1,32 @@
 package com.drew_benham.listapp.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
+@Entity(tableName = "media_table")
 public class Media implements Serializable {
     public static final int TYPE_MEDIA = 1;
     public static final int TYPE_LETTER = 2;
 
-    private UUID uuid;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "sub_title")
     private String subTitle;
+    @ColumnInfo(name = "image_src")
     private int imageSrc;
+    @ColumnInfo(name = "release_date")
     private Date releaseDate;
 
     // TODO: 7/22/19 This is for sorting the list alphabetically.
     private int type;
 
     public Media() {
-        uuid = UUID.randomUUID();
         title = "Not Set";
         subTitle = "Not Set";
         imageSrc = 0;
@@ -27,7 +35,6 @@ public class Media implements Serializable {
     }
 
     public Media(String letterTitle) {
-        uuid = UUID.randomUUID();
         title = letterTitle;
         subTitle = "";
         imageSrc = 0;
@@ -37,7 +44,6 @@ public class Media implements Serializable {
 
 
     public Media(String title, String subtitle, int imageSrc, Date releaseDate) {
-        uuid = UUID.randomUUID();
         this.title = title;
         this.subTitle = subtitle;
         this.imageSrc = imageSrc;
@@ -45,12 +51,12 @@ public class Media implements Serializable {
         type = TYPE_MEDIA;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

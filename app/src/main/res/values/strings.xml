@@ -8,6 +8,4 @@
     <string name="cd_tab_item">CD\'s</string>
     <string name="cassette_tab_item">Cassette</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

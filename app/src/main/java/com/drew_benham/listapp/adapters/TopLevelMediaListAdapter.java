@@ -1,28 +1,27 @@
 package com.drew_benham.listapp.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.models.Media;
+import com.drew_benham.listapp.models.MusicMedia;
 
 import java.util.List;
 
 public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMediaListAdapter.TopLevelViewHolder> {
-    private Context context;
     private List<Media> mediaList;
 
     private OnMediaListener onMediaListener;
 
-    public TopLevelMediaListAdapter(Context context, List<Media> mediaList, OnMediaListener onMediaListener) {
-        this.context = context;
-        this.mediaList = mediaList;
+    public TopLevelMediaListAdapter(OnMediaListener onMediaListener) {
         this.onMediaListener = onMediaListener;
     }
 
@@ -60,10 +59,18 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
 
     @Override
     public int getItemCount() {
-        return mediaList.size();
+        if (mediaList != null) {
+            return mediaList.size();
+        }
+        else return 0;
     }
 
     public Media getItem(int id) { return mediaList.get(id); }
+
+    public void setMediaList(List<Media> mediaList) {
+        this.mediaList = mediaList;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -95,11 +102,14 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
 
         @Override
         public void onClick(View v) {
-            mediaListener.onMediaClick(getAdapterPosition());
+            int position = getAdapterPosition();
+            if (mediaListener != null && (position != RecyclerView.NO_POSITION)) {
+                mediaListener.onMediaClick(mediaList.get(position));
+            }
         }
     }
 
     public interface OnMediaListener {
-        void onMediaClick(int position);
+        void onMediaClick(Media musicMedia);
     }
 }
