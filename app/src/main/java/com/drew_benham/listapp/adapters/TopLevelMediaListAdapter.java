@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,10 +16,13 @@ import com.drew_benham.listapp.R;
 import com.drew_benham.listapp.models.Media;
 import com.drew_benham.listapp.models.MusicMedia;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMediaListAdapter.TopLevelViewHolder> {
+public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMediaListAdapter.TopLevelViewHolder> implements Filterable {
     private List<Media> mediaList;
+    private List<Media> mediaListFull;
 
     private OnMediaListener onMediaListener;
 
@@ -69,6 +74,7 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
 
     public void setMediaList(List<Media> mediaList) {
         this.mediaList = mediaList;
+        mediaListFull = new ArrayList<>(mediaList);
         notifyDataSetChanged();
     }
 
@@ -83,6 +89,42 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
         }
         return viewType;
     }
+
+    @Override
+    public Filter getFilter() {
+        return mediaFilter;
+    }
+
+    private Filter mediaFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<Media> filteredList = new ArrayList<>();
+            if (charSequence == null || charSequence.length() == 0) {
+                filteredList.addAll(mediaListFull);
+            } else {
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+
+                for (Media mediaItem : mediaListFull) {
+                    if (mediaItem.getTitle().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(mediaItem);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            mediaList.clear();
+            mediaList.addAll((List) filterResults.values);
+
+            notifyDataSetChanged();
+        }
+    };
 
     public class TopLevelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView thumbNail;

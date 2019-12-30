@@ -23,7 +23,7 @@ public interface MusicDao {
     void delete(MusicMedia musicMedia);
 
     @Query("DELETE FROM media_table")
-    void deleteAll();
+    void deleteAllMusic();
 
     @Query("SELECT * from media_table")
     LiveData<List<MusicMedia>> getAllMusic();
