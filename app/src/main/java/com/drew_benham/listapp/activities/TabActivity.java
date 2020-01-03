@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
@@ -16,7 +17,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.drew_benham.listapp.R;
-import com.drew_benham.listapp.adapters.PageAdapter;
 import com.drew_benham.listapp.fragments.MusicFragment;
 import com.drew_benham.listapp.interfaces.OnDataChangedListener;
 import com.drew_benham.listapp.models.Media;
@@ -33,7 +33,6 @@ public class TabActivity extends AppCompatActivity implements MusicFragment.OnFr
     public static final String EDIT = "edit";
 
     private TabViewHolder tabViewholder;
-    private PageAdapter pagerAdapter;
     private List<Media> mediaList;
 
     public static OnDataChangedListener dataChangedListener;
@@ -48,9 +47,13 @@ public class TabActivity extends AppCompatActivity implements MusicFragment.OnFr
 
     private void setupLayout() {
         tabViewholder = new TabViewHolder();
-        pagerAdapter = new PageAdapter(getSupportFragmentManager(), tabViewholder.tabLayout.getTabCount(), mediaList);
-        tabViewholder.viewPager.setAdapter(pagerAdapter);
-        tabViewholder.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabViewholder.tabLayout));
+
+        if(tabViewholder.frameLayout != null) {
+            //TODO: add a runtime conditional for movies. based on (preferences or db?).
+            MusicFragment musicFragment = MusicFragment.newInstance(mediaList);
+
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, musicFragment).commit();
+        }
 
         tabViewholder.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,20 +82,12 @@ public class TabActivity extends AppCompatActivity implements MusicFragment.OnFr
     }
 
     private class TabViewHolder {
-        TabLayout tabLayout;
-        ViewPager viewPager;
-        TabItem vinylTab;
-        TabItem cdTab;
-        TabItem cassetteTab;
+        FrameLayout frameLayout;
         FloatingActionButton floatingActionButton;
 
         public TabViewHolder() {
-            tabLayout = findViewById(R.id.tabLayout);
+            frameLayout = findViewById(R.id.fragment_container);
             floatingActionButton = findViewById(R.id.floatingAddBtn);
-            viewPager = findViewById(R.id.viewPager);
-            vinylTab = findViewById(R.id.vinylTabItem);
-            cdTab = findViewById(R.id.cdTabItem);
-            cassetteTab = findViewById(R.id.cassetteTabItem);
         }
     }
 }

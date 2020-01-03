@@ -10,12 +10,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,10 +46,11 @@ import java.util.List;
  * Use the {@link MusicFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener, OnDataChangedListener {
-    private  ViewHolder viewHolder;
+public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.OnMediaListener, OnDataChangedListener, AdapterView.OnItemSelectedListener {
+    private ViewHolder viewHolder;
     private TopLevelMediaListAdapter topLevelMediaListAdapter;
     private MusicViewModel musicViewModel;
+    private ArrayList<String> spinnerOptions;
 
     private List<Media> mediaList;
 
@@ -67,22 +72,13 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
      */
     // TODO: Rename and change types and number of parameters
     public static MusicFragment newInstance(List<Media> mediaList) {
-        MusicFragment fragment = new MusicFragment();
-        Bundle args = new Bundle();
-//        mediaList = musicViewModel.getAllMusic();
-//
-//        ArrayList<Media> mediaArrayList = new ArrayList<>(mediaList.size());
-//        mediaArrayList.addAll(mediaList);
-//
-//        args.putSerializable(LIST_ARG, mediaArrayList);
-//        fragment.setArguments(args);
-        return fragment;
+        return new MusicFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.top_level_media_list, container, false);
+        final View view = inflater.inflate(R.layout.top_level_media_list, container, false);
         viewHolder = new ViewHolder(view);
 
         viewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -100,6 +96,36 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
                 topLevelMediaListAdapter.setMediaList(mediaGeneric);
             }
         });
+
+        spinnerOptions = new ArrayList<>();
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this.getActivity(),
+                android.R.layout.simple_spinner_item, spinnerOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        viewHolder.topLevelSpinner.setAdapter(spinnerAdapter);
+
+        musicViewModel.getAllMusicTypes().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                spinnerOptions.clear();
+                spinnerOptions.addAll(strings);
+                spinnerAdapter.notifyDataSetChanged();
+            }
+        });
+
+        viewHolder.topLevelSpinner.setOnItemSelectedListener(this);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                musicViewModel.delete((MusicMedia) topLevelMediaListAdapter.getMediaAt(viewHolder.getAdapterPosition()));
+            }
+        }).attachToRecyclerView(viewHolder.recyclerView);
 
         return view;
     }
@@ -212,6 +238,17 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
         musicViewModel.insert(music);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String mediaType = parent.getItemAtPosition(position).toString();
+        topLevelMediaListAdapter.getFilter().filter(mediaType);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        //do nothing
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -229,9 +266,11 @@ public class MusicFragment extends Fragment implements TopLevelMediaListAdapter.
 
     private class ViewHolder {
         private RecyclerView recyclerView;
+        private Spinner topLevelSpinner;
 
         public ViewHolder(View v) {
             recyclerView = v.findViewById(R.id.topLevelRecyclerView);
+            topLevelSpinner = v.findViewById(R.id.topLevelSpinner);
         }
     }
 }

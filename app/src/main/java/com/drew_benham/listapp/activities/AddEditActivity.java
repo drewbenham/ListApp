@@ -4,34 +4,46 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.drew_benham.listapp.R;
-import com.drew_benham.listapp.models.Media;
+import com.drew_benham.listapp.fragments.AddMediaTypeDialog;
 import com.drew_benham.listapp.models.MusicMedia;
+import com.drew_benham.listapp.view_models.MusicViewModel;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AddEditActivity extends AppCompatActivity {
+public class AddEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        AddMediaTypeDialog.EditTypeDialogListener {
     public static final String RESULT_MEDIA = "resultMedia";
 
     private AddEditViewHolder viewholder;
     private MusicMedia media;
+    private MusicViewModel musicViewModel;
     private boolean isMusic;
     private boolean isEdit;
+    private ArrayList<String> spinnerOptions;
 
     public static final int PICK_IMAGE = 1;
 
@@ -46,6 +58,8 @@ public class AddEditActivity extends AppCompatActivity {
             media = (MusicMedia) getIntent().getSerializableExtra(DetailedMedia.MEDIA_DETAIL);
             isEdit = true;
         }
+
+        musicViewModel = ViewModelProviders.of(this).get(MusicViewModel.class);
 
         //TODO: change this when you add types.
         isMusic = true;
@@ -105,6 +119,53 @@ public class AddEditActivity extends AppCompatActivity {
                 selectImage();
             }
         });
+
+        spinnerOptions = new ArrayList<>();
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, spinnerOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        viewholder.mediaTypeSpinner.setAdapter(spinnerAdapter);
+
+        musicViewModel.getAllMusicTypes().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                spinnerOptions.clear();
+                spinnerOptions.addAll(strings);
+                spinnerAdapter.notifyDataSetChanged();
+            }
+        });
+
+        viewholder.mediaTypeSpinner.setOnItemSelectedListener(this);
+        viewholder.addNewTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewTypeDialog("Add Music Type");
+            }
+        });
+    }
+
+    private void addNewTypeDialog(String title) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AddMediaTypeDialog addMediaTypeDialog = AddMediaTypeDialog.newInstance(title);
+        addMediaTypeDialog.show(fragmentManager, "dialog_fragment");
+    }
+
+    @Override
+    public void onFinishedEdit(String inputText) {
+        spinnerOptions.add(inputText);
+        viewholder.mediaTypeSpinner.setSelection(((ArrayAdapter)viewholder.mediaTypeSpinner
+                .getAdapter()).getPosition(inputText));
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String mediaType = parent.getItemAtPosition(position).toString();
+        media.setMusicMedium(mediaType);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        //do nothing
     }
 
     private void selectImage() {
@@ -165,6 +226,8 @@ public class AddEditActivity extends AppCompatActivity {
         private TextView subTitleEdit;
         private ImageView thumbnailPreview;
         private ImageButton pickImageBtn;
+        private Spinner mediaTypeSpinner;
+        private Button addNewTypeButton;
 
         AddEditViewHolder() {
             titleText = findViewById(R.id.titleTextLbl);
@@ -173,6 +236,8 @@ public class AddEditActivity extends AppCompatActivity {
             subTitleEdit = findViewById(R.id.subTitleEditText);
             thumbnailPreview = findViewById(R.id.thumbnailPreview);
             pickImageBtn = findViewById(R.id.picImageBtn);
+            mediaTypeSpinner = findViewById(R.id.media_type_spinner);
+            addNewTypeButton = findViewById(R.id.addNewTypeBtn);
         }
     }
 }

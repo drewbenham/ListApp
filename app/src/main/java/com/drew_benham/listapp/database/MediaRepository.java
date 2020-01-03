@@ -15,11 +15,13 @@ public class MediaRepository {
 
     private MusicDao musicDao;
     private LiveData<List<MusicMedia>> allMusic;
+    private LiveData<List<String>> allMusicTypes;
 
     public MediaRepository(Application application) {
         db = MediaRoomDatabase.getDatabase(application);
         this.musicDao = db.musicDao();
         this.allMusic = musicDao.getAllMusic();
+        this.allMusicTypes = musicDao.getMusicTypes();
     }
 
     public LiveData<List<MusicMedia>> getAllMusic() {
@@ -29,6 +31,8 @@ public class MediaRepository {
     public LiveData<MusicMedia> loadMusic(final int musicId) {
         return db.musicDao().loadMusic(musicId);
     }
+
+    public LiveData<List<String>> getAllMusicTypes() { return allMusicTypes; }
 
     public void insert(final MusicMedia musicMedia) {
         new InsertAsyncTask(musicDao).execute(musicMedia);

@@ -72,6 +72,10 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
 
     public Media getItem(int id) { return mediaList.get(id); }
 
+    public Media getMediaAt(int position){
+        return mediaList.get(position);
+    }
+
     public void setMediaList(List<Media> mediaList) {
         this.mediaList = mediaList;
         mediaListFull = new ArrayList<>(mediaList);
@@ -103,9 +107,13 @@ public class TopLevelMediaListAdapter extends RecyclerView.Adapter<TopLevelMedia
                 filteredList.addAll(mediaListFull);
             } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
-
+                String type = "";
                 for (Media mediaItem : mediaListFull) {
-                    if (mediaItem.getTitle().toLowerCase().contains(filterPattern)) {
+                    if (mediaItem instanceof MusicMedia) {
+                        type = ((MusicMedia) mediaItem).getMusicMedium().toLowerCase().trim();
+                    }
+                    if (mediaItem.getTitle().toLowerCase().contains(filterPattern) ||
+                            type.equals(filterPattern)) {
                         filteredList.add(mediaItem);
                     }
                 }

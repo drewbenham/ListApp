@@ -7,5 +7,13 @@
     <string name="vinyl_tab_item">33 Vinyl</string>
     <string name="cd_tab_item">CD\'s</string>
     <string name="cassette_tab_item">Cassette</string>
+    <string name="album_label">Album:</string>
+    <string name="album_edit">Album</string>
+    <string name="media_type_label">Media Type:</string>
+    <string name="add_btn_label">Add</string>
+    <string name="media_type_hint">Type</string>
 
+    <string-array name="media_types">
+        <item>None</item>
+    </string-array>
 </resources>

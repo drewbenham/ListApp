@@ -31,10 +31,10 @@
         android:id="@+id/titleEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:ems="10"
+        android:hint="@string/artist_title"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/titleTextLbl"
         app:layout_constraintTop_toTopOf="@+id/titleTextLbl" />
@@ -44,7 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Artist"
+        android:paddingEnd="55dp"
+        android:text="@string/artist_title"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/thumbnailPreview"
         app:layout_constraintTop_toTopOf="@+id/thumbnailPreview" />
@@ -53,13 +54,13 @@
         android:id="@+id/subTitleEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="@string/album_edit"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/subTitleTextLbl"
+        app:layout_constraintStart_toEndOf="@+id/titleTextLbl"
         app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
 
     <TextView
@@ -68,9 +69,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Album"
+        android:text="@string/album_label"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/thumbnailPreview"
         app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+
+    <Spinner
+        android:id="@+id/media_type_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/thumbnailPreview"
+        app:layout_constraintStart_toEndOf="@+id/thumbnailPreview"
+        app:layout_constraintTop_toBottomOf="@+id/subTitleTextLbl" />
+
+    <Button
+        android:id="@+id/addNewTypeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/add_btn_label"
+        app:layout_constraintStart_toEndOf="@+id/media_type_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/subTitleEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

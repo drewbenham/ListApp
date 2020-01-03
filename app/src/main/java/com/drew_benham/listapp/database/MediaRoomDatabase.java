@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-@Database(entities = {MusicMedia.class}, version = 1)
+@Database(entities = {MusicMedia.class}, version = 2)
 @TypeConverters({Converters.class})
 public abstract class MediaRoomDatabase extends RoomDatabase {
     public abstract MusicDao musicDao();

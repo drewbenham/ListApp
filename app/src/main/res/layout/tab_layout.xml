@@ -40,38 +40,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/musicMovieToggle">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tabLayout"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/vinylTabItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vinyl_tab_item" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/cdTabItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cd_tab_item" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/cassetteTabItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cassette_tab_item" />
-
-        </com.google.android.material.tabs.TabLayout>
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_container" />
 
     </RelativeLayout>
 

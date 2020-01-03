@@ -30,4 +30,7 @@ public interface MusicDao {
 
     @Query("SELECT * from media_table WHERE id = :id")
     LiveData<MusicMedia> loadMusic(int id);
+
+    @Query("SELECT DISTINCT music_medium FROM media_table")
+    LiveData<List<String>> getMusicTypes();
 }
